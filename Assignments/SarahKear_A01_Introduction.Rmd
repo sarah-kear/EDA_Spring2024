@@ -22,22 +22,22 @@ Enter answers to the questions just below the >Answer: prompt.
 
 1. What are your previous experiences with data analytics, R, and Git? Include both formal and informal training.
 
-> Answer: I learned R in Betsy's stats class. I haven't used Git in this capacity. I think I have minimal
+> Answer: I learned R in Betsy's stats class. I haven't used Git in this capacity. I think I have minimal training in data analytics, but I have experience in the stats class, mp work, and internship experiences.
 
 2. Are there any components of the course about which you feel confident?
 
-> Answer: 
+> Answer: I feel fairly confident about using R and knitting!
 
 3. Are there any components of the course about which you feel apprehensive?
 
-> Answer: 
+> Answer: I am a bit nervous about using Git, especially since I haven't used it as a user. I'm hoping to get more comofortable using a like remote drive.
 
 
 ## 2) GitHub
 
 Provide a link below to your forked course repository in GitHub. Make sure you have pulled all recent changes from the course repository and that you have updated your course README file, committed those changes, and pushed them to your GitHub account. 
 
-> Answer: 
+> Answer: https://github.com/sarah-kear/EDA_Spring2024
 
 ## 3) Knitting
 When you have completed this document, click the `knit` button.This should produce a PDF copy of your markdown document. Submit this PDF to Sakai. 
