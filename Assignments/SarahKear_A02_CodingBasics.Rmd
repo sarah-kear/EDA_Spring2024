@@ -1,6 +1,6 @@
 ---
 title: "Assignment 2: Coding Basics"
-author: "Student Name"
+author: "Sarah Kear"
 output: pdf_document
 geometry: margin=2.54cm
 editor_options: 
@@ -31,12 +31,23 @@ This exercise accompanies the lessons in Environmental Data Analytics on coding 
 4.  Insert comments in your code to describe what you are doing.
 
 ```{r basics 1}
-#1. 
+#1.
+# I am using the sequence function to generate a sequence from 1 to 30 by 3. It's function name is sequence1.
+sequence1 <- seq(1, 30, 3)
 
 #2. 
+# I am using the mean() function to determine the mean of sequence1. the function name is mean.
+mean <- mean(sequence1)
+
+# I am using the median() function to determine the median of sequence1. the function name is median.
+median <- median(sequence1)
 
 #3. 
-
+# created conditional statements for the R to determine if mean is greater than the median of sequence1.
+mean > median 
+mean < median
+mean != median
+mean == median
 ```
 
 ## Basics, Part 2
