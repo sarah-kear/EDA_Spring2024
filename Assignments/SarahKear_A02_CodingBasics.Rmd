@@ -31,6 +31,7 @@ This exercise accompanies the lessons in Environmental Data Analytics on coding 
 4.  Insert comments in your code to describe what you are doing.
 
 ```{r basics 1}
+sequence1 <- seq(1, 30, 3)
 #1.
 # I am using the sequence function to generate a sequence from 1 to 30 by 3. It's function name is sequence1.
 sequence1 <- seq(1, 30, 3)
@@ -49,6 +50,8 @@ mean < median
 mean != median
 mean == median
 ```
+
+
 
 ## Basics, Part 2
 
