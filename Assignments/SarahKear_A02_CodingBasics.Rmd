@@ -66,6 +66,7 @@ mean == median
 
 ```{r basics 2}
 #5.
+# created a list of vectors
 students <-list(name = c("Sarah", "Gus", "Mary", "Preston"),
                    test_score = c(100, 49, 82, 24),
                    passed = c("True", "False", "True", "False"))
@@ -77,13 +78,16 @@ class(students$test_score) # this vector is numeric.
 class(students$passed) # this vector is a character.
 
 #7.
-students_df <- as.data.frame(students) #turned the series of vectors into a dataframe.
+#turned the series of vectors into a data frame.
+students_df <- as.data.frame(students) 
 students_df
 
 #8.
+# renamed the students_df columns.
 colnames(students_df)[colnames(students_df) == "name"] ="Name"
 colnames(students_df)[colnames(students_df) == "test_score"] ="Test_Score"
 colnames(students_df)[colnames(students_df) == "passed"] ="Passed_Test"
+students_df
 ```
 
 9.  QUESTION: How is this data frame different from a matrix?
@@ -96,6 +100,7 @@ colnames(students_df)[colnames(students_df) == "passed"] ="Passed_Test"
 
 ```{r basics 3}
 #10.
+# `if` and `else` statement did not work, used the `ifelse` statement instead.
 passed_test <- function(x){
   ifelse(x>=50, "TRUE", "FALSE")} #log_exp, if TRUE, if FALSE
 
