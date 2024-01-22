@@ -66,13 +66,6 @@ mean == median
 
 ```{r basics 2}
 #5.
-name <- list(c("Sarah", "Gus", "Mary", "Preston"))
-name
-test <- list(c(100, 49, 82, 24))
-test
-passed <- list(c("True", "False", "True", "False"))
-passed
-
 students <-list(name = c("Sarah", "Gus", "Mary", "Preston"),
                    test_score = c(100, 49, 82, 24),
                    passed = c("True", "False", "True", "False"))
@@ -86,13 +79,16 @@ class(students$passed) # this vector is a character.
 #7.
 students_df <- as.data.frame(students) #turned the series of vectors into a dataframe.
 students_df
-#8.
 
+#8.
+colnames(students_df)[colnames(students_df) == "name"] ="Name"
+colnames(students_df)[colnames(students_df) == "test_score"] ="Test_Score"
+colnames(students_df)[colnames(students_df) == "passed"] ="Passed_Test"
 ```
 
 9.  QUESTION: How is this data frame different from a matrix?
 
-> Answer:
+> Answer: A data frame is different from a matrix because it can hold multiple data classes unlike a matrix which can only hold a singular data class. For example, the students df I created hold both numeric and character data classes. A matrix would only be able to contain either my character or numeric data not both.
 
 10. Create a function with an if/else statement. Your function should take a **vector** of test scores and print (not return) whether a given test score is a passing grade of 50 or above (TRUE or FALSE). You will need to choose either the `if` and `else` statements or the `ifelse` statement. 
 
@@ -101,22 +97,12 @@ students_df
 ```{r basics 3}
 #10.
 passed_test <- function(x){
-  ifelse(x>49, "TRUE", "FALSE")} #log_exp, if TRUE, if FALSE
-passed_test_answer <- passed_test(students$test_score); passed_test_answer
+  ifelse(x>=50, "TRUE", "FALSE")} #log_exp, if TRUE, if FALSE
 
-recipe4 <- function(x) {
-  if(x>49) {
-    "TRUE"
-  } 
-  else {
-    "FALSE"
-  }
-}
-meal <- recipe4(students$test_score); meal
 #11.
-
+passed_test_answer <- passed_test(students$test_score); passed_test_answer
 ```
 
 12. QUESTION: Which option of `if` and `else` vs. `ifelse` worked? Why?
 
-> Answer:
+> Answer: `ifelse` worked over the `if` and `else` statement because the `if` and `else` statement does not work with vectors, it needs a singular input.
