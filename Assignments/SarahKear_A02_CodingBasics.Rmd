@@ -32,21 +32,20 @@ This exercise accompanies the lessons in Environmental Data Analytics on coding 
 
 ```{r basics 1}
 #1.
-# I am using the sequence function to generate a sequence from 1 to 30 by 3. It's function name is sequence1.
-sequence1 <- seq(1, 30, 3)
+# Using the sequence function to generate a sequence from 1 to 30 by 3. 
 sequence1
 
 #2. 
-# I am using the mean() function to determine the mean of sequence1. the function name is mean.
+# Using the mean() function to determine the mean of sequence1. the function name is mean.
 mean <- mean(sequence1)
 mean
 
-# I am using the median() function to determine the median of sequence1. the function name is median.
+# Using the median() function to determine the median of sequence1. the function name is median.
 median <- median(sequence1)
 median
 
 #3. 
-# created conditional statements for the R to determine if mean is greater than the median of sequence1. The mean is equal to the median.
+# The mean is equal to the median.
 mean > median 
 mean < median
 mean != median
