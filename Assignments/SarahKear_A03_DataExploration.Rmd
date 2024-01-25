@@ -1,6 +1,6 @@
 ---
 title: "Assignment 3: Data Exploration"
-author: "Student Name"
+author: "Sarah Kear"
 date: "Spring 2024"
 output: pdf_document
 geometry: margin=2.54cm
@@ -33,7 +33,20 @@ This exercise accompanies the lessons in Environmental Data Analytics on Data Ex
 1.  Check your working directory, load necessary packages (tidyverse, lubridate), and upload two datasets: the ECOTOX neonicotinoid dataset (ECOTOX_Neonicotinoids_Insects_raw.csv) and the Niwot Ridge NEON dataset for litter and woody debris (NEON_NIWO_Litter_massdata_2018-08_raw.csv). Name these datasets "Neonics" and "Litter", respectively. Be sure to include the subcommand to read strings in as factors.
 
 ```{r,  message = FALSE}
+getwd()
 
+library(tidyverse)
+library (lubridate)
+
+Neonics <- read.csv(
+  "./Data/Raw/ECOTOX_Neonicotinoids_Insects_raw.csv",
+                    stringsAsFactors = TRUE
+                    )
+
+Litter <- read.csv(
+  "./Data/Raw/NEON_NIWO_Litter_massdata_2018-08_raw.csv",
+  stringsAsFactors = TRUE
+  )
 ```
 
 ## Learn about your system
@@ -58,13 +71,13 @@ This exercise accompanies the lessons in Environmental Data Analytics on Data Ex
 5.  What are the dimensions of the dataset?
 
 ```{r}
-
+dim(Neonics)
 ```
 
 6.  Using the `summary` function on the "Effect" column, determine the most common effects that are studied. Why might these effects specifically be of interest?
 
 ```{r}
-
+summary(Neonics$Effect)
 ```
 
 > Answer:
@@ -73,7 +86,12 @@ This exercise accompanies the lessons in Environmental Data Analytics on Data Ex
 7.  Using the `summary` function, determine the six most commonly studied species in the dataset (common name). What do these species have in common, and why might they be of interest over other insects? Feel free to do a brief internet search for more information if needed.[TIP: The `sort()` command can sort the output of the summary command...]
 
 ```{r}
-
+question_7 <- head(
+  sort(
+  summary(Neonics$Species.Common.Name),
+  decreasing = TRUE), n=6
+)
+question_7
 ```
 
 > Answer:
@@ -81,23 +99,34 @@ This exercise accompanies the lessons in Environmental Data Analytics on Data Ex
 8.  Concentrations are always a numeric value. What is the class of `Conc.1..Author.` column in the dataset, and why is it not numeric?
 
 ```{r}
-
+class(Neonics$Conc.1..Author.)
 ```
 
-> Answer:
+> Answer: `Conc.1..Author.` class is a factor. It is not numeric because...
 
 ## Explore your data graphically (Neonics)
 
 9.  Using `geom_freqpoly`, generate a plot of the number of studies conducted by publication year.
 
 ```{r}
-
+ggplot(Neonics) +
+  geom_freqpoly(
+    aes(
+      x = Publication.Year
+      )
+    )
 ```
 
 10. Reproduce the same graph but now add a color aesthetic so that different Test.Location are displayed as different colors.
 
 ```{r}
-
+ggplot(Neonics) +
+  geom_freqpoly(
+    aes(
+      x = Test.Location
+      ),
+    color = "aquamarine3"
+    )
 ```
 
 Interpret this graph. What are the most common test locations, and do they differ over time?
@@ -119,6 +148,7 @@ Interpret this graph. What are the most common test locations, and do they diffe
 12. Determine the class of collectDate. Is it a date? If not, change to a date and confirm the new class of the variable. Using the `unique` function, determine which dates litter was sampled in August 2018.
 
 ```{r}
+class(Litter$collectDate)
 
 ```
 
