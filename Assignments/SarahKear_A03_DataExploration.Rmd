@@ -53,24 +53,25 @@ Litter <- read.csv(
 
 2.  The neonicotinoid dataset was collected from the Environmental Protection Agency's ECOTOX Knowledgebase, a database for ecotoxicology research. Neonicotinoids are a class of insecticides used widely in agriculture. The dataset that has been pulled includes all studies published on insects. Why might we be interested in the ecotoxicology of neonicotinoids on insects? Feel free to do a brief internet search if you feel you need more background information.
 
-> Answer:
+> Answer: There may be interest in the ecotoxicology of neonicotinoid although they are used in agriculture to as a type of insecticide they do have the ability to move to other insects that are not a threat to crops causing them to die. As noted in a recent PNAS article, neonicotinoid poses a broader risk to biodiversity and food webs (https://www.pnas.org/doi/10.1073/pnas.2017221117). It's pertinant that we understand how neonicotinoid, a toxic chemical, impacts our greater ecosystem.
 
 3.  The Niwot Ridge litter and woody debris dataset was collected from the National Ecological Observatory Network, which collectively includes 81 aquatic and terrestrial sites across 20 ecoclimatic domains. 32 of these sites sample forest litter and woody debris, and we will focus on the Niwot Ridge long-term ecological research (LTER) station in Colorado. Why might we be interested in studying litter and woody debris that falls to the ground in forests? Feel free to do a brief internet search if you feel you need more background information.
 
-> Answer:
+> Answer: Litter and woody debris are an important part of forest and streams ecosystem because it is a food source and habitat for wildlife that live along the streams as well as the accumulation of debris creates carbon sequestration making the ecosystem a carbon sink. There may be interest in studying because it can show the ecosystem, biodiversity, and the overall health of the ecosystem.
 
 4.  How is litter and woody debris sampled as part of the NEON network? Read the NEON_Litterfall_UserGuide.pdf document to learn more. List three pieces of salient information about the sampling methods here:
 
 > Answer: 
- 1.
- 2.
- 3. 
+ 1. Litter and fine woody debris are collected using elevated an ground traps. Elevated traps are 80cm off the ground and ground traps are placed on the forest floor.
+ 2. Trap placement is either random or targeted, and is dependent on the type of vegetation. Areas with more than 50% aerial cover of vegetation that is greater than 2m, trap placement is randomized.
+ 3. Ground traps are sampled once per year. In deciduous forest sites, elevated traps are sampled once every 2 weeks during senescence while elevated traps in evergreen sites are sampeld once every 1 to 2 months.
 
 ## Obtain basic summaries of your data (Neonics)
 
 5.  What are the dimensions of the dataset?
 
 ```{r}
+# should i only just used the dim() function?
 dim(Neonics)
 ```
 
@@ -80,7 +81,7 @@ dim(Neonics)
 summary(Neonics$Effect)
 ```
 
-> Answer:
+> Answer: The two most common effects studied are population and mortality. Population may be the greatest common effect studied to determine how population is effected by neonicotinoids; similarily, mortalilty may also be a top effect studied since neonicotinoids is a type of insecticide and is known to impact the livelihood of non-targeted species.
 
 
 7.  Using the `summary` function, determine the six most commonly studied species in the dataset (common name). What do these species have in common, and why might they be of interest over other insects? Feel free to do a brief internet search for more information if needed.[TIP: The `sort()` command can sort the output of the summary command...]
