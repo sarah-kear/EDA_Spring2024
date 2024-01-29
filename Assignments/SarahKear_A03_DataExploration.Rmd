@@ -71,8 +71,10 @@ Litter <- read.csv(
 5.  What are the dimensions of the dataset?
 
 ```{r, Dimensions of Neonics Dataset}
-# should i only just used the dim() function?
-dim(Neonics)
+dimensions <- dim(Neonics)
+print(dimensions)
+
+# the dimensions of the Neonic dataset is 4623 observations and 30 variable
 ```
 
 6.  Using the `summary` function on the "Effect" column, determine the most common effects that are studied. Why might these effects specifically be of interest?
@@ -106,32 +108,31 @@ question_7
 class(Neonics$Conc.1..Author.)
 ```
 
-> Answer: `Conc.1..Author.` class is a factor. It is not numeric because the default for uploading data from a CSV file using `read.csv()` is to turn the data into factors. Futhermore, if I wanted to not have the datset uploade as factor, i would MAKE the `stringAsFactors` EQUAL TO `FALSE`.
+> Answer: `Conc.1..Author.` class is a factor. It is not numeric because the default for uploading data from a CSV file using `read.csv()` is to turn the data into factors. Futhermore, if I wanted to not have the datset uploade as factor, i would make the `stringAsFactors` equal to `FALSE`.
 
 ## Explore your data graphically (Neonics)
 
 9.  Using `geom_freqpoly`, generate a plot of the number of studies conducted by publication year.
 
-```{r, Frequency Polygon of Studies' Publication Years}
-# used geom_freqpoly() to make graph. changed the bins from 30 to 20.
+```{r, Frequency Polygon of Studies Publication Years}
+# used geom_freqpoly() to make graph.
 
 ggplot(Neonics) +
-  geom_freqpoly(aes(x = Publication.Year), bins = 20)
+  geom_freqpoly(aes(x = Publication.Year))
 ```
 
 10. Reproduce the same graph but now add a color aesthetic so that different Test.Location are displayed as different colors.
 
-```{r, Frequency Polygon of Test Locations}
-# THIS ONE DOES NOT WORK. GO TO OFFICE HOURS ABOUT THIS ONE. Should i add the train_continuous() function?
+```{r, Frequency Polygon of Publication Year by Test Locations}
+# Determined color inside the aes() to parse out test locations.
 
 ggplot(Neonics) +
-  geom_freqpoly(aes(x = Publication.Year), bins = 20) +
-  geom_freqpoly(aes(x = Test.Location), color = "aquamarine3") 
+  geom_freqpoly(aes(x = Publication.Year, color = Test.Location))
 ```
 
 Interpret this graph. What are the most common test locations, and do they differ over time?
 
-> Answer:
+> Answer: The most common test location seems to be the lab, especially between 2000-2005 and  2010-2020. Between 1990-2000 and ~2008 to 2010, the natural field was  the most common test location. Overall, the lab test location has continued to increase while the the natural field increased and then has decreased in recent years. 
 
 11. Create a bar graph of Endpoint counts. What are the two most common end points, and how are they defined? Consult the ECOTOX_CodeAppendix for more information. 
 
@@ -155,16 +156,14 @@ ggplot(Neonics, aes(x = Endpoint)) +
 # Class is factor, need to change to Date
 class(Litter$collectDate)
 
-# Writing code for three different date formats
-today <- Sys.Date()
-format(today, format = "%B")
-format(today, format = "%Y")
-format(today, format = "%d")
-
 #Made a new column and change the format to a date. This needs to be fixed. only showing up as NAs.
-Litter$collectDateNew <- as.Date(Litter$collectDate, format = "%Y%m%d")
+Litter$collectDateNew <- as.Date(Litter$collectDate, format = "%Y-%m-%d")
 
 class(Litter$collectDateNew)
+
+# the two dates litter was sampled was on 8/2/2018 and 8/30/2018
+sampledates <- unique(Litter$collectDateNew)
+print(sampledates)
 ```
 
 13. Using the `unique` function, determine how many plots were sampled at Niwot Ridge. How is the information obtained from `unique` different from that obtained from `summary`?
