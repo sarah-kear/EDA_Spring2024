@@ -40,7 +40,7 @@ vector2
 vector3 <- c(TRUE,TRUE,TRUE,FALSE,TRUE,FALSE) #logical vector
 vector3
 
-vector1[3] # 
+vector1[4] # 
 
 # Matrices ----
 matrix1 <- matrix(1:20, nrow = 5,ncol = 4) # 
