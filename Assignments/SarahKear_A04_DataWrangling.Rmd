@@ -41,16 +41,21 @@ getwd()
 
 #1c
 # reading raw datasets
-EPAair_O3_NC_2018 <- read.csv("./Data/Raw/EPAair_O3_NC2018_raw.csv", stringsAsFactors = TRUE)
 
-EPAair_O3_NC_2019 <- read.csv("./Data/Raw/EPAair_O3_NC2019_raw.csv", stringsAsFactors = TRUE)
+# THESE DO NOT UPLOAD, HAD TO UPLOAD THEM VIA FILES
+EPAair_O3_NC2018 <- read.csv("./Data/Raw/EPAair_O3_NC2018_raw.csv", stringsAsFactors = TRUE)
 
-EPAair_PM25_NC_2018 <- read.csv("./Data/Raw/EPAair_PM25_NC2018_raw.csv", stringsAsFactors = TRUE)
+EPAair_O3_NC2019 <- read.csv("./Data/Raw/EPAair_O3_NC2019_raw.csv", stringsAsFactors = TRUE)
 
-EPAair_PM25_NC_2019 <- read.csv("./Data/Raw/EPAair_PM25_NC2019_raw.csv", stringsAsFactors = TRUE)
+EPAair_PM25_NC2018 <- read.csv("./Data/Raw/EPAair_PM25_NC2018_raw.csv", stringsAsFactors = TRUE)
+
+EPAair_PM25_NC2019 <- read.csv("./Data/Raw/EPAair_PM25_NC2019_raw.csv", stringsAsFactors = TRUE)
 
 #2 
-
+glimpse(EPAair_O3_NC2018_raw)
+glimpse(EPAair_O3_NC2019)
+glimpse(EPAair_PM25_NC2018)
+gimpse(EPAair_PM25_NC2019) # THIS DOES NOT WORK
 ```
 
 
