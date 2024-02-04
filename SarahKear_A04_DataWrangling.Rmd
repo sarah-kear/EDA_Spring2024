@@ -31,7 +31,7 @@ This exercise accompanies the lessons in Environmental Data Analytics on Data Wr
 
 ```{r setup, message = FALSE}
 #1a
-# Loding tidyverse, lubridate, and here libraries
+# Loading tidyverse, lubridate, and here libraries
 library(tidyverse)
 library(lubridate)
 library(here)
@@ -46,13 +46,18 @@ EPA_O3_NC2018 <- read.csv(
   "./Data/Raw/EPAair_O3_NC2018_Raw.csv",
   stringsAsFactors = TRUE
   )
-EPA_O3_NC2019 <- read.csv("./Data/Raw/EPAair_O3_NC2019_Raw.csv",
+
+EPA_O3_NC2019 <- read.csv(
+  "./Data/Raw/EPAair_O3_NC2019_Raw.csv",
                           stringsAsFactors = TRUE
                           )
-EPA_PM25_NC2018 <- read.csv("./Data/Raw/EPAair_PM25_NC2018_Raw.csv",
-                            stringsAsFactors = TRUE)
+EPA_PM25_NC2018 <- read.csv(
+  "./Data/Raw/EPAair_PM25_NC2018_Raw.csv",
+                            stringsAsFactors = TRUE
+  )
 
-EPA_PM25_NC2019 <- read.csv("./Data/Raw/EPAair_PM25_NC2019_Raw.csv",
+EPA_PM25_NC2019 <- read.csv(
+  "./Data/Raw/EPAair_PM25_NC2019_Raw.csv",
                             stringsAsFactors = TRUE
                             )
 
@@ -61,12 +66,15 @@ EPA_PM25_NC2019 <- read.csv("./Data/Raw/EPAair_PM25_NC2019_Raw.csv",
 glimpse(
   EPA_O3_NC2018
   )
+
 glimpse(
   EPA_O3_NC2019
   )
+
 glimpse(
   EPA_PM25_NC2018
   )
+
 glimpse(
   EPA_PM25_NC2019
   )
@@ -92,6 +100,7 @@ EPA_PM25_NC2018$Date <- as.Date(EPA_PM25_NC2018$Date, format = "%m/%d/%Y")
 EPA_PM25_NC2019$Date <- as.Date(EPA_PM25_NC2019$Date, format = "%m/%d/%Y")
 
 #4
+#Creating new datasets based on the specified columns asked for
 EPA_O3_NC2018_df <- select(EPA_O3_NC2018, 
                            Date, 
                            DAILY_AQI_VALUE, 
@@ -99,6 +108,7 @@ EPA_O3_NC2018_df <- select(EPA_O3_NC2018,
                            AQS_PARAMETER_DESC, 
                            COUNTY:SITE_LONGITUDE
                            )
+
 EPA_O3_NC2019_df <- select(EPA_O3_NC2019, 
                            Date, 
                            DAILY_AQI_VALUE, 
@@ -106,6 +116,7 @@ EPA_O3_NC2019_df <- select(EPA_O3_NC2019,
                            AQS_PARAMETER_DESC, 
                            COUNTY:SITE_LONGITUDE
                            )
+
 EPA_PM25_NC2018_df <- select(EPA_PM25_NC2018, 
                            Date, 
                            DAILY_AQI_VALUE, 
@@ -113,6 +124,7 @@ EPA_PM25_NC2018_df <- select(EPA_PM25_NC2018,
                            AQS_PARAMETER_DESC, 
                            COUNTY:SITE_LONGITUDE
                            )
+
 EPA_PM25_NC2019_df <- select(EPA_PM25_NC2019, 
                            Date, 
                            DAILY_AQI_VALUE, 
@@ -148,6 +160,7 @@ write.csv(
   row.names = FALSE, 
   file = "./Data/Processed/EPAair_O3_NC2019_Processed.csv"
   )
+
 write.csv(
   EPA_PM25_NC2018_df, 
   row.names = FALSE, 
