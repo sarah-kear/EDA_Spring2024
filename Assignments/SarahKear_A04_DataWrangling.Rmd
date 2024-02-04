@@ -37,13 +37,14 @@ library(lubridate)
 library(here)
 
 #1b 
+here()
 getwd()
 
 #1c
 # reading raw datasets
 
 # THESE DO NOT UPLOAD, HAD TO UPLOAD THEM VIA FILES
-EPAair_O3_NC2018 <- read.csv("./Data/Raw/EPAair_O3_NC2018_raw.csv", stringsAsFactors = TRUE)
+EPAair_O3_NC2018 <- read.csv(".Data/Raw/EPAair_O3_NC2018_raw.csv", stringsAsFactors = TRUE)
 
 EPAair_O3_NC2019 <- read.csv("./Data/Raw/EPAair_O3_NC2019_raw.csv", stringsAsFactors = TRUE)
 
