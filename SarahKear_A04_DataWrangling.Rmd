@@ -30,33 +30,46 @@ This exercise accompanies the lessons in Environmental Data Analytics on Data Wr
 2. Apply the `glimpse()` function to reveal the dimensions, column names, and structure of each dataset. 
 
 ```{r setup, message = FALSE}
-#1a 
-# installing packages tidyverse, lubridate, and here
+#1a
+# Loding tidyverse, lubridate, and here libraries
 library(tidyverse)
 library(lubridate)
 library(here)
 
 #1b 
-here()
+# check working directory. THIS NEEDS TO BE CHECKED DURING OH!!!
 getwd()
 
 #1c
-# reading raw datasets
+# Calling the four EPA Datasets
+EPA_O3_NC2018 <- read.csv(
+  "./Data/Raw/EPAair_O3_NC2018_Raw.csv",
+  stringsAsFactors = TRUE
+  )
+EPA_O3_NC2019 <- read.csv("./Data/Raw/EPAair_O3_NC2019_Raw.csv",
+                          stringsAsFactors = TRUE
+                          )
+EPA_PM25_NC2018 <- read.csv("./Data/Raw/EPAair_PM25_NC2018_Raw.csv",
+                            stringsAsFactors = TRUE)
 
-# THESE DO NOT UPLOAD, HAD TO UPLOAD THEM VIA FILES
-EPAair_O3_NC2018 <- read.csv("./Data/Raw/EPAair_O3_NC2018_raw.csv", stringsAsFactors = TRUE)
+EPA_PM25_NC2019 <- read.csv("./Data/Raw/EPAair_PM25_NC2019_Raw.csv",
+                            stringsAsFactors = TRUE
+                            )
 
-EPAair_O3_NC2019 <- read.csv("./Data/Raw/EPAair_O3_NC2019_raw.csv", stringsAsFactors = TRUE)
-
-EPAair_PM25_NC2018 <- read.csv("./Data/Raw/EPAair_PM25_NC2018_raw.csv", stringsAsFactors = TRUE)
-
-EPAair_PM25_NC2019 <- read.csv("./Data/Raw/EPAair_PM25_NC2019_raw.csv", stringsAsFactors = TRUE)
-
-#2 
-glimpse(EPAair_O3_NC2018_raw)
-glimpse(EPAair_O3_NC2019)
-glimpse(EPAair_PM25_NC2018)
-gimpse(EPAair_PM25_NC2019) # THIS DOES NOT WORK
+#2
+# Used glimpse() function to see four EPA datasets
+glimpse(
+  EPA_O3_NC2018
+  )
+glimpse(
+  EPA_O3_NC2019
+  )
+glimpse(
+  EPA_PM25_NC2018
+  )
+glimpse(
+  EPA_PM25_NC2019
+  )
 ```
 
 
@@ -72,13 +85,80 @@ gimpse(EPAair_PM25_NC2019) # THIS DOES NOT WORK
 
 ```{r}
 #3
+# Used as.DATE() to turn Date Columns to date objects
+EPA_O3_NC2018$Date <- as.Date(EPA_O3_NC2018$Date, format = "%m/%d/%Y")
+EPA_O3_NC2019$Date <- as.Date(EPA_O3_NC2019$Date, format = "%m/%d/%Y")
+EPA_PM25_NC2018$Date <- as.Date(EPA_PM25_NC2018$Date, format = "%m/%d/%Y")
+EPA_PM25_NC2019$Date <- as.Date(EPA_PM25_NC2019$Date, format = "%m/%d/%Y")
 
 #4
-
+EPA_O3_NC2018_df <- select(EPA_O3_NC2018, 
+                           Date, 
+                           DAILY_AQI_VALUE, 
+                           Site.Name,
+                           AQS_PARAMETER_DESC, 
+                           COUNTY:SITE_LONGITUDE
+                           )
+EPA_O3_NC2019_df <- select(EPA_O3_NC2019, 
+                           Date, 
+                           DAILY_AQI_VALUE, 
+                           Site.Name,
+                           AQS_PARAMETER_DESC, 
+                           COUNTY:SITE_LONGITUDE
+                           )
+EPA_PM25_NC2018_df <- select(EPA_PM25_NC2018, 
+                           Date, 
+                           DAILY_AQI_VALUE, 
+                           Site.Name,
+                           AQS_PARAMETER_DESC, 
+                           COUNTY:SITE_LONGITUDE
+                           )
+EPA_PM25_NC2019_df <- select(EPA_PM25_NC2019, 
+                           Date, 
+                           DAILY_AQI_VALUE, 
+                           Site.Name,
+                           AQS_PARAMETER_DESC, 
+                           COUNTY:SITE_LONGITUDE
+                           )
 #5
+# Used pipes to mutate the AQS_PARAMETER_DESC column by changing the descriptions, manually, to PM2.5
+# Used the same process for each dataset
+EPA_PM25_NC2018_df <- EPA_PM25_NC2018_df %>%  
+  mutate(AQS_PARAMETER_DESC = fct_recode(AQS_PARAMETER_DESC,
+    "PM2.5" = "PM2.5 - Local Conditions",
+    "PM2.5" = "Acceptable PM2.5 AQI & Speciation Mass"
+  ))
+
+EPA_PM25_NC2019_df <- EPA_PM25_NC2019_df %>%  
+  mutate(AQS_PARAMETER_DESC = fct_recode(AQS_PARAMETER_DESC,
+    "PM2.5" = "PM2.5 - Local Conditions",
+    "PM2.5" = "Acceptable PM2.5 AQI & Speciation Mass"
+  ))
 
 #6
+# Saving the four datasets into the processed folder
+write.csv(
+  EPA_O3_NC2018_df, 
+  row.names = FALSE, 
+  file = "./Data/Processed/EPAair_O3_NC2018_Processed.csv"
+  )
 
+write.csv(
+  EPA_O3_NC2019_df, 
+  row.names = FALSE, 
+  file = "./Data/Processed/EPAair_O3_NC2019_Processed.csv"
+  )
+write.csv(
+  EPA_PM25_NC2018_df, 
+  row.names = FALSE, 
+  file = "./Data/Processed/EPAair_PM25_NC2018_Processed.csv"
+  )
+
+write.csv(
+  EPA_PM25_NC2019_df, 
+  row.names = FALSE, 
+  file = "./Data/Processed/EPAair_PM25_NC2019_Processed.csv"
+  )
 ```
 
 
