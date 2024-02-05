@@ -211,7 +211,8 @@ EPA_O3_PM25_NC1819_processed <- EPA_O3_PM25_NC1819 %>%
            Site.Name == "Clemmons Middle" | Site.Name == "Mendenhall School" | 
            Site.Name == "Frying Pan Mountain" | Site.Name == "West Johnston Co." | 
            Site.Name == "Garinger High School" | Site.Name == "Castle Hayne" | 
-           Site.Name == "Pitt Agri. Center" | Site.Name == "Bryson City" | Site.Name == "Millbrook School") %>%
+           Site.Name == "Pitt Agri. Center" | Site.Name == "Bryson City" 
+         | Site.Name == "Millbrook School") %>%
   group_by(Date, #beginning of split-apply-combine strategy
            Site.Name, 
            AQS_PARAMETER_DESC,
@@ -263,4 +264,4 @@ dim(EPA_O3_PM25_NC1819.summaries)
 
 14. Why did we use the function `drop_na` rather than `na.omit`? Hint: replace `drop_na` with `na.omit` in part 12 and observe what happens with the dimensions of the summary date frame.
 
-> Answer: I'm pretty sure that we used the `drop_na` function rathern than `na.omit` function because it also deleted rows where cells in mean.PM25.AQI were na. This decrease rows from 211 to 101. 
+> Answer: We used the `drop_na` function rathern than `na.omit` function because it also deleted rows where cells in mean.PM25.AQI were na. This decreased the amount of rows from 211 to 101. 
