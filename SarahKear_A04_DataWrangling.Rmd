@@ -37,7 +37,7 @@ library(lubridate)
 library(here)
 
 #1b 
-# check working directory. THIS NEEDS TO BE CHECKED DURING OH!!!
+# check working directory 
 getwd()
 
 #1c
@@ -91,13 +91,20 @@ glimpse(
 
 6. Save all four processed datasets in the Processed folder. Use the same file names as the raw files but replace "raw" with "processed".
 
-```{r}
+```{r, creating data foramts & new datasets}
 #3
 # Used as.DATE() to turn Date Columns to date objects
 EPA_O3_NC2018$Date <- as.Date(EPA_O3_NC2018$Date, format = "%m/%d/%Y")
+class(EPA_O3_NC2018$Date)
+
 EPA_O3_NC2019$Date <- as.Date(EPA_O3_NC2019$Date, format = "%m/%d/%Y")
+class(EPA_O3_NC2019$Date)
+
 EPA_PM25_NC2018$Date <- as.Date(EPA_PM25_NC2018$Date, format = "%m/%d/%Y")
+class(EPA_PM25_NC2018$Date)
+
 EPA_PM25_NC2019$Date <- as.Date(EPA_PM25_NC2019$Date, format = "%m/%d/%Y")
+class(EPA_PM25_NC2019$Date)
 
 #4
 #Creating new datasets based on the specified columns asked for
@@ -108,6 +115,7 @@ EPA_O3_NC2018_df <- select(EPA_O3_NC2018,
                            AQS_PARAMETER_DESC, 
                            COUNTY:SITE_LONGITUDE
                            )
+head(EPA_O3_NC2018_df, 5)
 
 EPA_O3_NC2019_df <- select(EPA_O3_NC2019, 
                            Date, 
@@ -116,6 +124,7 @@ EPA_O3_NC2019_df <- select(EPA_O3_NC2019,
                            AQS_PARAMETER_DESC, 
                            COUNTY:SITE_LONGITUDE
                            )
+head(EPA_O3_NC2019_df, 5)
 
 EPA_PM25_NC2018_df <- select(EPA_PM25_NC2018, 
                            Date, 
@@ -124,6 +133,7 @@ EPA_PM25_NC2018_df <- select(EPA_PM25_NC2018,
                            AQS_PARAMETER_DESC, 
                            COUNTY:SITE_LONGITUDE
                            )
+head(EPA_PM25_NC2018_df, 5)
 
 EPA_PM25_NC2019_df <- select(EPA_PM25_NC2019, 
                            Date, 
@@ -132,6 +142,8 @@ EPA_PM25_NC2019_df <- select(EPA_PM25_NC2019,
                            AQS_PARAMETER_DESC, 
                            COUNTY:SITE_LONGITUDE
                            )
+head(EPA_PM25_NC2019_df, 5)
+
 #5
 # Used pipes to mutate the AQS_PARAMETER_DESC column by changing the descriptions, manually, to PM2.5
 # Used the same process for each dataset
@@ -195,7 +207,7 @@ write.csv(
 
 11. Save your processed dataset with the following file name: "EPAair_O3_PM25_NC1819_Processed.csv"
 
-```{r}
+```{r, binding and filtering to create final processed dataset}
 #7 
 # Used the rbind() function to combine the four EPA datasets together
 EPA_O3_PM25_NC1819 <- rbind(EPA_O3_NC2018_df,
@@ -203,6 +215,7 @@ EPA_O3_PM25_NC1819 <- rbind(EPA_O3_NC2018_df,
                             EPA_PM25_NC2018_df,
                             EPA_PM25_NC2019_df
                             )
+head(EPA_O3_PM25_NC1819, 5)
 
 #8 
 EPA_O3_PM25_NC1819_processed <- EPA_O3_PM25_NC1819 %>%
@@ -221,13 +234,14 @@ EPA_O3_PM25_NC1819_processed <- EPA_O3_PM25_NC1819 %>%
             meanlatitude = mean(SITE_LATITUDE),
             meanlongitude = mean(SITE_LONGITUDE)) %>%
   mutate(Month = month(Date), Year = year(Date)) #Creating the Month and Year columns with mutate()
+head(EPA_O3_PM25_NC1819_processed, 5)
 
 #9
 # Separated PM2.5 and Ozone to become one row per day per location
 EPA_O3_PM25_NC1819_processed.spread <- pivot_wider(EPA_O3_PM25_NC1819_processed, 
                                                    names_from = AQS_PARAMETER_DESC, 
-                                                   values_from = meanAQI
-                                                   )
+                                                   values_from = meanAQI)
+
 #10
 # 8976 rows and 9 columns
 dim(EPA_O3_PM25_NC1819_processed.spread)
@@ -247,7 +261,7 @@ write.csv(
 
 13. Call up the dimensions of the summary dataset.
 
-```{r}
+```{r, creation of summary dataset}
 #12
 EPA_O3_PM25_NC1819.summaries <- 
   EPA_O3_PM25_NC1819_processed.spread %>%
@@ -255,6 +269,7 @@ EPA_O3_PM25_NC1819.summaries <-
   summarise(mean.O3.AQI = mean(PM2.5), 
             mean.PM25.AQI = mean(Ozone)) %>% #creating the mean for ozone and PM2.5
   filter(!is.na(mean.O3.AQI)) # removing where mean ozone is not available
+head(EPA_O3_PM25_NC1819.summaries, 5)
 
 #13
 # Dimensions are 211 rows by 5 columns
@@ -264,4 +279,4 @@ dim(EPA_O3_PM25_NC1819.summaries)
 
 14. Why did we use the function `drop_na` rather than `na.omit`? Hint: replace `drop_na` with `na.omit` in part 12 and observe what happens with the dimensions of the summary date frame.
 
-> Answer: We used the `drop_na` function rathern than `na.omit` function because it also deleted rows where cells in mean.PM25.AQI were na. This decreased the amount of rows from 211 to 101. 
+> Answer: We used the `drop_na` function rathern than `na.omit` function because it also deleted rows where cells in column mean.PM25.AQI were na. This decreased the amount of rows from 211 to 101. 
