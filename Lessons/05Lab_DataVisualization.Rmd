@@ -31,6 +31,8 @@ library(colormap)
 
 #Add pre-set themes <--NEW
 library(ggthemes)
+
+getwd()
 ```
 
 ## Expression function and Saving plots
@@ -93,16 +95,27 @@ Say we want to plot the number of records each month in the Peter/Paul lakes dat
 
 ```{r Plot the number of records by month}
 #What kind of values are months?
+class(PeterPaul.chem.nutrients$month)
 
 #List unique values
-
+unique(PeterPaul.chem.nutrients$month)
 #Plot how many Lake observations occur each month
+ggplot(PeterPaul.chem.nutrients, aes(x = month)) +
+  geom_bar()
 
 #Convert month to a factor -- with 12 levels, labelled with month names
+PeterPaul.chem.nutrients$mont_f <- factor(
+  PeterPaul.chem.nutrients$month, levels=1:12,
+  labels = month.abb)
 
 #Try again: Plot how many Lake observations occur each month
+ggplot(PeterPaul.chem.nutrients, aes(x = mont_f)) +
+  geom_bar()
 
 #Alter to include missing months
+ggplot(PeterPaul.chem.nutrients, aes(x = mont_f)) +
+  geom_bar() +
+  scale_x_discrete(drop=FALSE)
 
 #Tidy up the code
 
@@ -144,7 +157,7 @@ surface_temp_1999_plot
 
 #Apply a theme
 surface_temp_1999_plot + 
-  theme_gray()
+  theme_classic()
 
 #Apply a ggtheme
 surface_temp_1999_plot + 
@@ -229,6 +242,23 @@ Exercise: build your own scatterplots of PeterPaul.chem.nutrients
 # Color your points by year, and facet by lake in two rows.
 # Change the ylab name
 
+PeterPaul.chem.nutrients$day <- day(PeterPaul.chem.nutrients$sampledate)
+  
+plot1 <- PeterPaul.chem.nutrients %>% 
+  filter(depth == 0) %>%
+  ggplot(aes(
+      x=daynum,
+      y=temperature_C,
+      color=year4)
+    ) + 
+  geom_point(alpha=0.45) + 
+  facet_wrap(vars(lakename)) +
+  ylab(expression(paste("Temperature", degree, "C"))) +
+  xlab("Year")
+
+
+#Show the basic plot
+plot1
 
 #2. 
 # Plot temperature by date. Color your points by depth.
