@@ -1,6 +1,6 @@
 ---
 title: "Assignment 5: Data Visualization"
-author: "Student Name"
+author: "Sarah Kear"
 date: "Spring 2024"
 output: pdf_document
 geometry: margin=2.54cm
@@ -32,9 +32,17 @@ This exercise accompanies the lessons in Environmental Data Analytics on Data Vi
 
 ```{r initialize project}
 #1 
+library(tidyverse);library(lubridate);library(here);library(cowplot)
 
 #2 
+processed_data = "Data/Processed_KEY"
+PeterPaul.chem.nutrients <- read.csv(
+  here(processed_data,"NTL-LTER_Lake_Chemistry_Nutrients_PeterPaul_Processed.csv"),
+  stringsAsFactors = TRUE)
 
+Niwot.Ridge.Litter <- read.csv(
+  here(processed_data,"NTL-LTER_Lake_Chemistry_Nutrients_PeterPaul_Processed.csv"),
+  stringsAsFactors = TRUE)
 ```
 ## Define your theme
 3. Build a theme and set it as your default theme. Customize the look of at least two of the following: 
@@ -46,7 +54,17 @@ This exercise accompanies the lessons in Environmental Data Analytics on Data Vi
 
 ```{r build plot theme}
 #3
-
+AO5_theme <- theme_base() + 
+  theme(
+    end.background = element_rect(
+      color= 'cornsilk',
+      fill = 'white'
+    ),
+    legend.title = element_text(
+      color= 'darkslategray',
+      size = 16
+    )
+  )
 ```
 
 ## Create graphs
