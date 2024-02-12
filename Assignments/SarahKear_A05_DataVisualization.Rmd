@@ -151,6 +151,10 @@ A05_theme1 <- theme_base() + theme(
    legend.text = element_text(
      size = 8
      ),
+   axis.text.x = element_text(
+     angle = 90, 
+     vjust = 0.5, 
+     hjust=1),
    legend.position = "top",
    plot.background = element_blank()
    )
@@ -192,8 +196,7 @@ tp <- PeterPaul.chem.nutrients %>%
   theme(legend.position = "NONE",
         axis.title.x = element_text(
      color = "black",
-     size = 10),
-     panel.border = element_blank()) +
+     size = 10)) +
   scale_x_discrete(drop=FALSE)
 tp
 
