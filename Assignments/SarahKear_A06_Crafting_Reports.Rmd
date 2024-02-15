@@ -27,7 +27,17 @@ Using markdown, create a table beneath the `Table: EPA Air Quality` line below t
 
 Table: EPA Air Quality
 ```{r, echo=FALSE}
-
+library(knitr)
+EPATable <- data.frame(Item.Name = c('Source', 
+                         'Date', 
+                         'Filename'),
+                      Value = c('EPA Air Quality System (AQS)',
+                                '2018-2019',
+                                'EPAair_O3_PM25_NC1819_Processed.csv'))
+knitr::kable(EPATable,
+             col.names = gsub("[.]",
+                              " ",
+                              names(EPATable)))
 ```
 
 
