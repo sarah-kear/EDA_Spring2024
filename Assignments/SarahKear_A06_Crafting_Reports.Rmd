@@ -40,8 +40,6 @@ knitr::kable(EPATable,
                               names(EPATable)))
 ```
 
-
-
 ---
 
 ## Task 2 - Import packages and data, suppressing messages
