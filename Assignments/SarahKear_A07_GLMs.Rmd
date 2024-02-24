@@ -141,7 +141,7 @@ summary(temp_lr1)
 
 8. Interpret your model results in words. Include how much of the variability in temperature is explained by changes in depth, the degrees of freedom on which this finding is based, and the statistical significance of the result. Also mention how much temperature is predicted to change for every 1m change in depth. 
 
-> Answer: *Temperature = 21.96 - 1.95depth*. A meter increase in depth is associated with a 1.95 decrease of temperature, holding all else constant. Depth's regression coefficient has a p-value that is less than 0.05, meaning that depth has a statistically significant relationship with temperature. The adjusted r-squared is 0.7387, meaning that around 73.87% of the changes in temperature is due to changes in depth. The degree of freedom the finding is based off of is 9,726. SHOULD I ADD MORE ABOUT THE DEGREES OF FREEDOM??
+> Answer: *Temperature = 21.96 - 1.95depth*. A meter increase in depth is associated with a 1.95 decrease of temperature, holding all else constant. Depth's regression coefficient has a p-value that is less than 0.05, meaning that depth has a statistically significant relationship with temperature. The adjusted r-squared is 0.7387, meaning that around 73.87% of the changes in temperature is due to changes in depth. The degree of freedom the finding is based off of is 9,726. We are able to reject the null hypothesis. SHOULD I ADD MORE ABOUT THE DEGREES OF FREEDOM??
 
 
 ---
@@ -179,13 +179,20 @@ summary(Temp_AIC)
 
 ```{r anova.model}
 #12
+# Do i need to create a sep. dataset that groups by lake name, year, and daynum and creates the average temp. for that day per year???
+lake.july.ANOVA <- aov(data = NTL_LTER_Processed,
+                       temperature_C ~ lakename)
+summary(lake.july.ANOVA)
 
+lake.july.ANOVA2 <-lm(data = NTL_LTER_Processed,
+                       temperature_C ~ lakename)
+summary(lake.july.ANOVA2)
 
 ```
 
 13. Is there a significant difference in mean temperature among the lakes? Report your findings. 
 
-> Answer: 
+> Answer: Yes, there is significant difference in the mean temperature among the different lakes. We confirm this as the p-value is less than 0.05. We are able to reject the null hypothesis that all lake means are equal. SHOULD I INCLUDE MORE??
 
 
 
@@ -193,34 +200,54 @@ summary(Temp_AIC)
 
 ```{r scatterplot.2}
 #14.
+# Is this what they want??
+plot2 <- NTL_LTER_Processed %>%
+  ggplot(aes(
+    x=depth,
+    y=temperature_C,
+    color=lakename
+  )) +
+  geom_point(alpha = .5, size = 1.5) +
+  geom_smooth(method = "lm", se = FALSE, size = 1, aes(group = lakename)) +
+  ylim(0, 35) +
+  ylab(expression(paste("Temperature", degree, "C"))) +
+  xlab("Depth (meters)") +
+  ggtitle(expression(paste("Temperature", degree, "C by Depth (m)"))) +
+  A07theme
+print(plot2)
 
-
+# is this graph alright??
 ```
 
 15. Use the Tukey's HSD test to determine which lakes have different means.
 
 ```{r tukey.test}
 #15
-
-
+TukeyHSD(lake.july.ANOVA)
+lake.july.groups <- HSD.test(lake.july.ANOVA, "lakename", group = TRUE)
+lake.july.groups
 ```
 
 16.From the findings above, which lakes have the same mean temperature, statistically speaking, as Peter Lake? Does any lake have a mean temperature that is statistically distinct from all the other lakes?
 
->Answer:
+>Answer: Using the HSD.test(), Paul Lake and Ward Lake have the same mean as Peter Lake. There is not a lake that has a mean temperature that is statistically distinct from any of the other lakes. All lakes are groups with other lakes with the same mean.
 
- 
 
 17. If we were just looking at Peter Lake and Paul Lake. What's another test we might explore to see whether they have distinct mean temperatures? 
 
->Answer: 
-
+>Answer: We could use the two-sample t-test or Bartlett Test and test for equal variances. WHICH ONE IS CORRECT??
 
 
 18. Wrangle the July data to include only records for Crampton Lake and Ward Lake. Run the two-sample T-test on these data to determine whether their July temperature are same or different. What does the test say? Are the mean temperatures for the lakes equal? Does that match you answer for part 16?
 
 ```{r t.test}
+NTL_LTER_Crampton_Ward <- NTL_LTER_Processed %>%
+  filter(lakename %in% c("Crampton Lake", "Ward Lake"))
 
+temp.twosample <- t.test(NTL_LTER_Crampton_Ward$temperature_C ~ NTL_LTER_Crampton_Ward$lakename)
+temp.twosample
+
+# do i need to turn this into a GLM??
 ```
 
->Answer: 
+>Answer: First, we cannot reject the null hypothesis, as the p-value is greater than 0.05. The mean from both lakes are the same. The mean temperature amounts for each lake are the same as the lake's respetive outputs from Question 16.
