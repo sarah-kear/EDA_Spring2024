@@ -32,12 +32,53 @@ library(agricolae)
 library(here)
 here()
 
-NTL_LTER_Physics <- read.csv(here("Data/Raw/NTL-LTER_Lake_ChemistryPhysics_Raw.csv"), stringsAsFactors = TRUE)
+NTL_LTER_Physics <- read.csv(
+  here("Data/Raw/NTL-LTER_Lake_ChemistryPhysics_Raw.csv"), 
+  stringsAsFactors = TRUE
+  )
 
+NTL_LTER_Physics$sampledate <- as.Date(
+  NTL_LTER_Physics$sampledate,
+                                  format = "%m/%d/%y"
+                                  )
+head(NTL_LTER_Physics$sampledate, 5)
+
+NTL_LTER_Physics$year4 <- year(
+  as.Date(NTL_LTER_Physics$sampledate
+          ))
+head(NTL_LTER_Physics$year4, 5)
+
+NTL_LTER_Physics$month <- month(
+  as.Date(NTL_LTER_Physics$sampledate
+          ))
+head(NTL_LTER_Physics$month, 5)
 
 #2
-
-
+A07theme <- theme_classic(base_size = 12) +
+  theme(
+    axis.text = element_text(
+      color = "black",
+      size = 10
+      ),
+   axis.title.x = element_text( #Updating x-axis
+     color = "black",
+     size = 12
+   ),
+   axis.title.y = element_text( #Updating y-axis
+     color = "black",
+     size = 12
+   ),
+    legend.position = "top", #Putting legend to top
+     legend.title = element_text( #Updating legend title
+      color='black',
+      size = 12
+    ),
+   legend.text = element_text( #Updating legend text
+     size = 12
+     ),
+    plot.background = element_blank() #removing plot edge/background
+   )
+theme_set(A07theme)
 ```
 
 ## Simple regression
@@ -45,8 +86,8 @@ Our first research question is: Does mean lake temperature recorded during July 
 
 3. State the null and alternative hypotheses for this question:
 > Answer:
-H0: 
-Ha: 
+H0: There is no difference in mean lake temperature during July across all lakes' depth.
+Ha: There is difference in mean lake temperature during July across all lakes' depth.
 
 
 4.  Wrangle your NTL-LTER dataset with a pipe function so that the records meet the following criteria: 
@@ -58,31 +99,49 @@ Ha:
 
 ```{r scatterplot}
 #4
-
+NTL_LTER_Processed <- NTL_LTER_Physics %>%
+  filter(NTL_LTER_Physics$month == 7) %>%
+  select(lakename:daynum,
+         depth:temperature_C
+         ) %>%
+  na.omit()
+head(NTL_LTER_Processed, 5)
 
 #5
-
-
+plot1 <- NTL_LTER_Processed %>%
+  ggplot(aes(
+    x=depth,
+    y=temperature_C
+  )) +
+  geom_point(alpha = 1/5, color = "azure4", size = 1.5) +
+  geom_smooth(method = "lm", se = FALSE, col="slateblue2") +
+  ylim(0, 35) +
+  ylab(expression(paste("Temperature", degree, "C"))) +
+  xlab("Depth (meters)") +
+  ggtitle(expression(paste("Temperature", degree, "C by Depth (m)"))) +
+  A07theme
+print(plot1)
 ```
 
 
 6. Interpret the figure. What does it suggest with regards to the response of temperature to depth? Do the distribution of points suggest about anything about the linearity of this trend?
 
-> Answer: 
+> Answer: Overall, there seems to be a negative correlation between temperature and depth. Temperature decreases as the lake depth increases. However, there is a a fairly wide range in terms of the temperature distribution by depth. the points are not necessarily close to smooth line, illustrating that that relationship between temperature and depth is not be that linear.
 
 
 7. Perform a linear regression to test the relationship and display the results.
 
 ```{r linear.regression}
 #7
-
-
+temp_lr1 <- lm(data = NTL_LTER_Processed,
+               temperature_C ~ depth)
+summary(temp_lr1)
 ```
 
 
 8. Interpret your model results in words. Include how much of the variability in temperature is explained by changes in depth, the degrees of freedom on which this finding is based, and the statistical significance of the result. Also mention how much temperature is predicted to change for every 1m change in depth. 
 
-> Answer:
+> Answer: *Temperature = 21.96 - 1.95depth*. A meter increase in depth is associated with a 1.95 decrease of temperature, holding all else constant. Depth's regression coefficient has a p-value that is less than 0.05, meaning that depth has a statistically significant relationship with temperature. The adjusted r-squared is 0.7387, meaning that around 73.87% of the changes in temperature is due to changes in depth. The degree of freedom the finding is based off of is 9,726. SHOULD I ADD MORE ABOUT THE DEGREES OF FREEDOM??
 
 
 ---
@@ -97,17 +156,19 @@ Let's tackle a similar question from a different approach. Here, we want to expl
 
 ```{r temperature.model}
 #9
+Temp_AIC <- lm(data = NTL_LTER_Processed,
+               temperature_C ~ year4 + daynum + depth)
 
-
+step(Temp_AIC)
 
 #10
-
+summary(Temp_AIC)
 
 ```
 
 11. What is the final set of explanatory variables that the AIC method suggests we use to predict temperature in our multiple regression? How much of the observed variance does this model explain? Is this an improvement over the model using only depth as the explanatory variable?
 
-> Answer: 
+> Answer: The final set of explanatory variables that the AIC method suggests are the three variables included. Removing year, daynum, or depth would increase the AIC. The oberserved variance only explain 74% of change in temperature. This is a slight imporvement in adusted r-squared, but i don't think it's that much improvement as it now takes three explanatory variables in explain 74% of temperature change, when it only takes one explanatory variables (depth) that explains 73.9% of temperature change.
 
 
 
