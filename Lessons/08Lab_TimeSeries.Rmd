@@ -58,8 +58,8 @@ Temp_BR <- read.csv(here("Data/Raw/tas_1901_2016_BRA.csv"), stringsAsFactors = T
 Rainfall_BR_processed <-
   Rainfall_BR %>% 
   rename( Rainfall = Rainfall....MM.) %>% 
-  separate(Statistics,c("Null","Month","Null2")," ") %>% 
-  mutate( Date = my(paste0(Month,"-",Year))) %>% 
+  separate(Statistics,c("Null","Month","Null2")," ") %>% # LIKE THE TEXT TO COLUMN IN EXCEL
+  mutate( Date = my(paste0(Month,"-",Year))) %>% #USE PASTE0 IS THERE IS NO SEPARATOR
   select(Date,Rainfall)
 
 #Exercise 3: Repeat exercise 2 to the temperature dataset.
@@ -72,7 +72,7 @@ Temp_BR_processed <-
 
 
 #Exercise 4: Join the temperature and rainfall into one tidy data frame with 3 columns: Date, Rainfall and Temperature.
-BR_complete <- inner_join(Rainfall_BR_processed,Temp_BR_processed)
+BR_complete <- inner_join(Rainfall_BR_processed,Temp_BR_processed) #will join based on same date, more useful than cbind because cbind just binds them together, this one determines based on same characteristics
   
            
 ```
@@ -83,26 +83,37 @@ BR_complete <- inner_join(Rainfall_BR_processed,Temp_BR_processed)
 ```{r}
 
 #Exercise 5: Check if there is any missing data for both temperature and rainfall series.
-
-
-
+which(is.na(BR_complete)) #OR
+summary(BR_complete)
 
 #Exercise 6: Plot both series over time on separate plots. Add a trend line using geom_smooth(). Can you say something about the trend just by visualizing the data?
+plot1 <- BR_complete %>%
+  ggplot(aes(x=Date, y=Rainfall)) +
+  geom_line() +
+  geom_smooth(method = "lm", se = FALSE, size = 1)
+plot1 # the intervals between each year is the same space so like same time --- indicates there is seasonality.
 
-
-
-
-
-
+plot2 <- BR_complete %>%
+  ggplot(aes(x=Date, y=Temperature_C)) +
+  geom_line() +
+  geom_smooth(method = "lm", se = FALSE, size = 1)
+plot2
 ```
 
 ## Creating time series objects
 
 ```{r}
 #Exercise 7: Create a time series objects for each series using ts(). Make sure you specify the starting point and frequency.
+f_month <- month(first(BR_complete$Date)) # NEED THE FIRST OBSERVATION IS AT THE FIRST ROW
+f_year <- year(first(BR_complete$Date))
 
+br_rainfall_ts <- ts(BR_complete$Rainfall,
+                   start=c(f_year,f_month), #this automates the first month instead of looking at the data
+                   frequency=12)
 
-
+br_temp_ts <- ts(BR_complete$Temperature_C,
+                   start=c(f_year,f_month),
+                   frequency=12)
 ```
 
 
@@ -122,22 +133,37 @@ The `stl` function decomposes the time series object into its component parts. W
 
 # Exercise 8: Use the stl() function to decompose both series. 
 # Visualize the decomposed series using plot(). What components can you identify?
+rainfall_decomp <- stl(br_rainfall_ts, s.window = "periodic")
+plot(rainfall_decomp)
 
-
-
-
-
+temp_decomp <- stl(br_temp_ts, s.window = "periodic")
+plot(temp_decomp)
 
 # Exercise 9: Use the times series object generated with the stl() to extract the 
 # components of each series and turn them into data frames.
 
+rainfall_data <-as.data.frame(rainfall_decomp$time.series) %>%
+  mutate(Observed=BR_complete$Rainfall,
+         Date=BR_complete$Date)
 
-
-
-
+temp_data <-as.data.frame(temp_decomp$time.series) %>%
+  mutate(Observed=BR_complete$Rainfall,
+         Date=BR_complete$Date)
 
 # Exercise 10: Visualize how the trend maps onto the data for both series
+rainfall_data_plot <-
+ggplot(rainfall_data, aes(x = Date)) +
+  geom_line(aes(y=Observed)) +
+  geom_line(aes(y=trend), color = "red") +
+  ylab("Rainfall")
+print(rainfall_data_plot)
 
+temp_data_plot <-
+ggplot(temp_data, aes(x = Date)) +
+  geom_line(aes(y=Observed)) +
+  geom_line(aes(y=trend), color = "red") +
+  ylab("Temperature")
+print(temp_data_plot)
 
 
 
@@ -159,25 +185,21 @@ Monotonic trends are a gradual shift over time that is consistent in direction. 
 ```{r}
 
 # Exercise 11: Apply one of the trend detection test to the original data set. Remember that the data has seasonal component, which test can be applied in this case?
+# if there is seasonal component, use season mann-kendall test
 
+test1<- trend::smk.test(br_rainfall_ts)
+test1
+summary(test1)
+# conclude there is a trend
+# the s tells you whether it is positive or negative. 7071 ie positive, positive trend
 
-
-
-
-
-
-
+test2<- trend::smk.test(br_temp_ts)
+test2
+summary(test2)
+# conclude there is a trend
+# the s tells you whether it is positive or negative. 7071 ie positive, positive trend
 
 # Exercise 12: Now remove the seasonality and apply another test. Compare the results with what you obtained on Exercise 9.
-
-
-
-
-
-
-
-
-
 
 
 ```
