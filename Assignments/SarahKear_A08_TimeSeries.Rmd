@@ -127,7 +127,7 @@ head(GaringerOzone,
      5)
 
 #5
-GaringerOzone[is.na(GaringerOzone$Daily.Max.8.hour.Ozone.Concentration)] <- NA #is this correct?
+GaringerOzone[is.na(GaringerOzone$Daily.Max.8.hour.Ozone.Concentration)] <- NA
 
 Days <- as.data.frame(seq(as.Date("2010-01-01"), 
                           as.Date("2019-12-31"), 
@@ -180,7 +180,7 @@ GaringerOzone <-
 summary(GaringerOzone$Daily.Max.8.hour.Ozone.Concentration)
 ```
 
-> Answer: In this case we wouldn't use the piecewise interpolation because piecewise assign the missing values as the values closet to the missing day. This may not be the most approriate as Ozone concetration changes per day. We also wouldn't use spline interpolation because it is a bit more complex than linear interpolation and may lead to overfitting. Linear interpolation is the best because the majority of changes in Ozone concetrations seems to be gradual and continuous. -- IS THIS CORRECT??
+> Answer: In this case we wouldn't use the piecewise interpolation because piecewise assign the missing values as the values closet to the missing day. This may not be the most approriate as Ozone concetration changes per day. We also wouldn't use spline interpolation because it is a bit more complex than linear interpolation and may lead to overfitting. Linear interpolation is the best because the majority of changes in Ozone concetrations seems to be gradual and continuous.
 
 
 9. Create a new data frame called `GaringerOzone.monthly` that contains aggregated data: mean ozone concentrations for each month. In your pipe, you will need to first add columns for year and month to form the groupings. In a separate line of code, create a new Date column with each month-year combination being set as the first day of the month (this is for graphing purposes only)
@@ -195,7 +195,7 @@ GaringerOzone.monthly <- GaringerOzone %>%
                                             na.rm = TRUE))
 
 GaringerOzone.monthly <- GaringerOzone.monthly %>%
-  mutate(Date = make_date(year, month, 1)) # is this a correct way to do it?
+  mutate(Date = make_date(year, month, 1))
 ```
 
 
@@ -265,7 +265,7 @@ print(plot2)
 
 14. To accompany your graph, summarize your results in context of the research question. Include output from the statistical test in parentheses at the end of your sentence. Feel free to use multiple sentences in your interpretation.
 
-> Answer: There is a present negative trend in Ozone concentrations changing over the 2010s at the Garinger High School station (Score = -77, z = -1.963, 2-sided p-value = 0.04965). Since the p=value is less than 0.05, we can reject the null hypothesis that there is no trend. As the score is -77, we conclude that there is a negative trend in Ozone concentration throughout the 2010s. # Is this correct???
+> Answer: There is a present negative trend in Ozone concentrations changing over the 2010s at the Garinger High School station (Score = -77, z = -1.963, 2-sided p-value = 0.04965). Since the p=value is less than 0.05, we can reject the null hypothesis that there is no trend. As the score is -77, we conclude that there is a negative trend in Ozone concentration throughout the 2010s.
 
 15. Subtract the seasonal component from the `GaringerOzone.monthly.ts`. Hint: Look at how we extracted the series components for the EnoDischarge on the lesson Rmd file.
 
