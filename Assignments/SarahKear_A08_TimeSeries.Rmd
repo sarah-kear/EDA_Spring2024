@@ -28,7 +28,6 @@ This exercise accompanies the lessons in Environmental Data Analytics on general
 
 ```{r}
 #1
-getwd()
 library(here)
 here
 
@@ -96,6 +95,7 @@ GaringerOzone <- rbind(O3_Garinger_2010,
                        O3_Garinger_2017,
                        O3_Garinger_2018,
                        O3_Garinger_2019)
+dim(GaringerOzone)
 ```
 
 ## Wrangle
@@ -137,6 +137,9 @@ colnames(Days) <- "Date"
 GaringerOzone <- left_join(Days, 
                            GaringerOzone, 
                            by = "Date")
+
+dim(GaringerOzone)
+head(GaringerOzone, 5)
 ```
 
 ## Visualize
@@ -158,7 +161,7 @@ plot1 <- GaringerOzone %>%
 plot1
 ```
 
->Answer: Yes there seems to be a trend overall and within each year. Within each year, the middle of the year seems to have greater Ozone concetrations than the beginning and end of the year. The purple trend line suggests that between 2010 and 2019 there is a steady decrease in Ozone concetrations.
+>Answer: Yes there seems to be a trend overall and within each year. Within each year, the middle of the year seems to have greater Ozone concetrations than the beginning and end of the year, potentially indicating seasonality. The purple trend line suggests that between 2010 and 2019 there has been a decrease in daily Ozone concetration.
 
 ## Time Series Analysis
 
@@ -178,9 +181,7 @@ GaringerOzone <-
 summary(GaringerOzone$Daily.Max.8.hour.Ozone.Concentration)
 ```
 
-> Answer: In this case we wouldn't use the piecewise interpolation because piecewise assign the missing values as the values closet to the missing day. This may not be the most approriate as Ozone concetration changes per day. We also wouldn't use spline interpolation because it is a bit more complex than linear interpolation and may lead to overfitting. Linear interpolation is the best because the majority of changes in Ozone concetrations seems to be gradual and continuous. 
-
-This is the correct answer:: This data best fits with linear function rather than quadratic function-- more approiate fits better. Linear does an average of before and after. Includes the trend from the avail. data. Good because we are missing short amount of day sof data.
+> Answer: In this case we wouldn't use the piecewise interpolation because piecewise assign the missing values as the values closet to the missing day. This may not be the most approriate as Ozone concetration changes per day. We also wouldn't use spline interpolation because it is a bit more complex than linear interpolation, and the ozone data fits best with a linear function rather than a quadratic function. Linear interpolation is the best because it produces an avaerage of the before and after which best fits as the changes in Ozone concetrations are gradual.
 
 
 9. Create a new data frame called `GaringerOzone.monthly` that contains aggregated data: mean ozone concentrations for each month. In your pipe, you will need to first add columns for year and month to form the groupings. In a separate line of code, create a new Date column with each month-year combination being set as the first day of the month (this is for graphing purposes only)
@@ -196,6 +197,8 @@ GaringerOzone.monthly <- GaringerOzone %>%
 
 GaringerOzone.monthly <- GaringerOzone.monthly %>%
   mutate(Date = make_date(year, month, 1))
+
+head(GaringerOzone.monthly, 5)
 ```
 
 
@@ -242,7 +245,7 @@ GaringerOzone.monthly.trend
 summary(GaringerOzone.monthly.trend)
 ```
 
-> Answer: The seasonal Mann-Kendall test is the most appropriate because it not only evaluates to see if there is a monotonic trend in Ozone concentration but it also accounts for the that seasonality of Ozone concentrations. 
+> Answer: The seasonal Mann-Kendall test is the most appropriate because it evaluates to see if there is a monotonic trend in Ozone concentration and also accounts for the that seasonality of Ozone concentration throughout the 2010s. 
 
 13. Create a plot depicting mean monthly ozone concentrations over time, with both a geom_point and a geom_line layer. Edit your axis labels accordingly.
 
@@ -265,7 +268,7 @@ print(plot2)
 
 14. To accompany your graph, summarize your results in context of the research question. Include output from the statistical test in parentheses at the end of your sentence. Feel free to use multiple sentences in your interpretation.
 
-> Answer: There is a present negative trend in Ozone concentrations changing over the 2010s at the Garinger High School station (Score = -77, z = -1.963, 2-sided p-value = 0.04965). Since the p=value is less than 0.05, we can reject the null hypothesis that there is no trend. As the score is -77, we conclude that there is a negative trend in Ozone concentration throughout the 2010s.
+> Answer: There is a present negative trend in Ozone concentrations changing over the 2010s at the Garinger High School station (Score = -77, z = -1.963, 2-sided p-value = 0.04965). Since the p=value is less than 0.05, we can reject the null hypothesis that there is no trend. As the score is -77, we conclude that there is a negative trend in Ozone concentration throughout the 2010s. This decreasing trend is also illustrated in the line graph as there is a gradual decrease in average monthly Ozone concentrations per year.
 
 15. Subtract the seasonal component from the `GaringerOzone.monthly.ts`. Hint: Look at how we extracted the series components for the EnoDischarge on the lesson Rmd file.
 
@@ -286,7 +289,6 @@ monthly.subtract.ts <- GaringerOzone.monthly.ts - Monthy.O3.Components$seasonal
 #16
 monthly.O3.trend1 <- trend::mk.test(monthly.subtract.ts)
 monthly.O3.trend1 
-summary(monthly.O3.trend1)
 ```
 
-> Answer: 
+> Answer: Both monthly series have a p-value of less than 0.05, meaning that both monthly series, seasonal or not, can reject the null hypothesis. There is statistically significant trend in both seasonal and non-seasonal series. Both also have a negative score, indicating a negative trend in either series. The non-seasonal monthly series has a p-value far less than the seasonal series (p = 0.00754), indicating it has a greater statistical significanc than the seasonal series. Furthermore, the non-seasonal series has a far higher score of -1,179. This means that is has a more significant montonic, negative trend than the seasonal series. By removing the seasonality from the monthly series, we have a far more statistically significant and monotonic negative trend in Ozone concentration at the Garinger High School station during the 2010s.
