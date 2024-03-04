@@ -27,6 +27,7 @@ This exercise accompanies the lessons in Environmental Data Analytics on general
 * Set your ggplot theme
 
 ```{r}
+#1
 getwd()
 library(here)
 here
@@ -48,11 +49,11 @@ A08theme <- theme_classic(base_size = 12) +
       ),
    axis.title.x = element_text( #Updating x-axis
      color = "black",
-     size = 12
+     size = 11
    ),
    axis.title.y = element_text( #Updating y-axis
      color = "black",
-     size = 12
+     size = 11
    ),
     plot.background = element_blank() #removing plot edge/background
    )
@@ -108,7 +109,7 @@ GaringerOzone <- rbind(O3_Garinger_2010,
 6. Use a `left_join` to combine the data frames. Specify the correct order of data frames within this function so that the final dimensions are 3652 rows and 3 columns. Call your combined data frame GaringerOzone. 
 
 ```{r}
-# 3
+#3
 GaringerOzone$Date <- as.Date(
   GaringerOzone$Date,
   format = "%m/%d/%Y")
@@ -116,7 +117,7 @@ GaringerOzone$Date <- as.Date(
 head(GaringerOzone$Date,
      5)
 
-# 4
+#4
 GaringerOzone <- GaringerOzone %>%
   select(Date, 
          Daily.Max.8.hour.Ozone.Concentration, 
@@ -125,15 +126,16 @@ GaringerOzone <- GaringerOzone %>%
 head(GaringerOzone, 
      5)
 
-# 5
-GaringerOzone[is.na(GaringerOzone$Daily.Max.8.hour.Ozone.Concentration)] <- NA
+#5
+GaringerOzone[is.na(GaringerOzone$Daily.Max.8.hour.Ozone.Concentration)] <- NA #is this correct?
 
 Days <- as.data.frame(seq(as.Date("2010-01-01"), 
                           as.Date("2019-12-31"), 
                           by = "day"))
+
 colnames(Days) <- "Date"
 
-# 6
+#6
 GaringerOzone <- left_join(Days, 
                            GaringerOzone, 
                            by = "Date")
