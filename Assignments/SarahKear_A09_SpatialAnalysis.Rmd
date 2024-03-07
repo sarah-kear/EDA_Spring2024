@@ -1,6 +1,6 @@
 ---
 title: "Assignment 9: Spatial Analysis in R"
-author: "Student Name"
+author: "Sarah Kear"
 output: html_document
 ---
 
@@ -26,10 +26,14 @@ This exercise accompanies the lessons in Environmental Data Analytics (ENV872L) 
 
 ```{r Prepare workspace, error=F, warning=F}
 #1. 
-
+library(tidyverse)
+library(sf)
+library(leaflet)
+library(here)
+library(mapview)
 
 #2. 
-
+here()
 
 ```
 
@@ -43,7 +47,8 @@ In this exercise, we will be exploring stream gage height data in Nebraska corre
 
 ```{r Read the county data into an sf dataframe}
 #3. Read in Counties shapefile into an sf dataframe, filtering for just NE counties
-
+Neb_Counties <- st_read(here('Data/Spatial/cb_2018_us_county_20m.shp')) %>% 
+  filter(STATEFP == 31)
 
 #4. Reveal the CRS of the counties features
 
@@ -68,15 +73,17 @@ Next we'll read in some USGS/NWIS gage location data added to the `Data/Raw` fol
 
 ```{r Read in USGS Gage Locations}
 #7. Read in gage locations csv as a dataframe
-
+Gage_Loc <- read.csv(here("Data/Raw/NWIS_SiteInfo_NE_RAW.csv"), stringsAsFactors = TRUE) %>%
+        mutate(site_no = as.character(site_no))
 
 #8. Reveal the names of the columns
+colnames(Gage_Loc)
 
 
 ```
 
 9. What columns in the dataset contain the x and y coordinate values, respectively?  
-> ANSWER:
+> ANSWER: column dec_long_va contains the x coordiante values, and columns dec_lat_va contains the y coordinate calues.
 > 
 
 
@@ -89,10 +96,12 @@ Next we'll read in some USGS/NWIS gage location data added to the `Data/Raw` fol
 
 ```{r Convert dataframe to sf dataframe}
 #10. Convert to an sf object
-
+Gage_Loc.sf <- Gage_Loc %>% 
+  st_as_sf(coords = c('dec_long_va','dec_lat_va'),
+           crs=#NEED THIS NUMBER)
 
 #11. Re-examine the column names
-
+colnames(Gage_Loc.sf)
 
 ```
 
