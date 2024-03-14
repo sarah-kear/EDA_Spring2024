@@ -51,16 +51,15 @@ Neb_Counties <- st_read(here('Data/Spatial/cb_2018_us_county_20m.shp')) %>%
   filter(STATEFP == 31)
 
 #4. Reveal the CRS of the counties features
-
+print(st_crs(Neb_Counties))
 
 #5. Plot the data
-
+mapview(Neb_Counties)
 ```
 
 6. What is the EPSG code of the Counties dataset? Is this a geographic or a projected coordinate reference system? (Or, does this CRS use angular or planar coordinate units?) To what datum is this CRS associated? (Tip: look for the EPSG code on <https://spatialreference.org> and examine the link for "Well Known Text as HTML" or "Human-Readable OGC WKT"...)
 
-> ANSWER: 
-> 
+> ANSWER: The EPSG is '4296.' It is a geographic coordinate system. EPSG:4296 is associated with the North American Datum of 1983 (NAD1983).
 
 
 ### Read in gage locations csv as a dataframe, then display the column names it contains
@@ -73,13 +72,15 @@ Next we'll read in some USGS/NWIS gage location data added to the `Data/Raw` fol
 
 ```{r Read in USGS Gage Locations}
 #7. Read in gage locations csv as a dataframe
-Gage_Loc <- read.csv(here("Data/Raw/NWIS_SiteInfo_NE_RAW.csv"), stringsAsFactors = TRUE) %>%
-        mutate(site_no = as.character(site_no))
+usgs.gage.locations <- read.csv(here("Data/Raw/NWIS_SiteInfo_NE_RAW.csv"), stringsAsFactors = TRUE) %>%
+        mutate(site_no = as.factor(site_no),
+               station_nm = as.factor(station_nm),
+               site_tp_cd = as.factor(site_tp_cd),
+               coord_acy_cd = as.factor(coord_acy_cd),
+               dec_coord_datum_cd = as.factor(dec_coord_datum_cd))
 
 #8. Reveal the names of the columns
-colnames(Gage_Loc)
-
-
+colnames(usgs.gage.locations)
 ```
 
 9. What columns in the dataset contain the x and y coordinate values, respectively?  
