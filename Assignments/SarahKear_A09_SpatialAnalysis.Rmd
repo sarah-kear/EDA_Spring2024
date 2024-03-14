@@ -52,7 +52,7 @@ Neb_Counties <- st_read(here('Data/Spatial/cb_2018_us_county_20m.shp')) %>%
 #4. Reveal the CRS of the counties features
 st_crs(Neb_Counties)
 
-#5. Plot the data
+  ```#5. Plot the data
 mapview(Neb_Counties)
 ```
 
