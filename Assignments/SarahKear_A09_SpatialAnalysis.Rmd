@@ -98,7 +98,7 @@ colnames(usgs.gage.locations)
 #10. Convert to an sf object
 usgs.gage.locations.sf <- usgs.gage.locations %>% 
   st_as_sf(coords = c('dec_long_va','dec_lat_va'),
-           crs=4296) #is this the correct crs?
+           crs=4296)
 
 #11. Re-examine the column names
 colnames(usgs.gage.locations.sf)
@@ -150,15 +150,15 @@ Lastly, we want to attach some gage height data to our site locations. I've cons
 usgs.gage.data <- read.csv(here("Data/Raw/NWIS_SiteFlowData_NE_RAW.csv"),
                            stringsAsFactors = TRUE) %>%
         mutate(site_no = as.factor(site_no),
-               station_nm = as.factor(station_nm)) #do i need to clean this dataset since there are multiple observations per gage
+               station_nm = as.factor(station_nm))
 
 #15. Show the column names
 colnames(usgs.gage.data)
 
 #16. Join the flow data to our NWIS gage location spatial dataframe
 usgs.gage.join <- usgs.gage.locations.sf %>%
-  left_join(usgs.gage.data,
-            by = "site_no") # is this the correct join?
+  inner_join(usgs.gage.data,
+            by = "site_no")
 
 #17. Show the column names of the joined dataset
 colnames(usgs.gage.join)
@@ -185,7 +185,7 @@ mapview(Neb_Counties,
         lwd = 1) +
   mapview(usgs.gage.join,
           zcol = "gage_ht",
-          col.region = viridis) #should i have nas?
+          col.region = viridis)
 ```
 
 ---
@@ -236,11 +236,11 @@ lancaster_gage <- usgs.gage.utm[lancaster,]
 
 #24 Plot
 mapview(Neb_Counties,
-        col.regions = NA,
-        col ='black',
+        col.regions = "azure1",
+        col ='darkslategrey',
         lwd = 1) +
   mapview(lancaster,
           col.regions = "blue") +
   mapview(lancaster_gage,
-          col.regions = "red") #do i just need to show them? or make their color based on height?
+          col.regions = "red")
 ```
