@@ -19,6 +19,7 @@ library(rvest)
 
 #install.packages("dataRetrieval")
 library(dataRetrieval)
+# created to obtain a bunch of data withouth understanding how a URL works *FOR USGS*
 
 #install.packages("tidycensus")
 library(tidycensus)
@@ -77,9 +78,13 @@ The power in this is that we aren't limited to sending requests and handling res
 ```{r pull.and.plot.discharge.data}
 #Set the URL
 theURL <- 'https://waterdata.usgs.gov/nwis/uv?search_site_no=02087500&period=7&format=rdb'
+#searh site number = river number
+# period = days of data we want
+# format = rdb = relational database = tab delineated file = easy to pull into r
 
 #Get the data, which starts on line 30
 gage_data <- read.table(theURL,skip = 29,header=TRUE,sep='\t',stringsAsFactors = T) 
+# sep = \t means tab
 
 #Update the column headers
 colnames(gage_data) = c("agency_cd", "site_no", "datetime", "tz_cd",
@@ -99,11 +104,35 @@ ggplot(gage_data,aes(x=datetime,y=discharge_cfs)) +
 > Alter the above code so that it plots the last *24* days of flow for gage *02085070*
 
 ```{r EXERCISE - pull.and.plot.other.discharge.data}
+#Set the URL
+theUR1L <- 'https://waterdata.usgs.gov/nwis/uv?search_site_no=02085070&period=24&format=rdb'
+#searh site number = river number
+# period = days of data we want
+# format = rdb = relational database = tab delineated file = easy to pull into r
 
+#Get the data, which starts on line 30
+gage_data1 <- read.table(theUR1L,skip = 29,header=TRUE,sep='\t',stringsAsFactors = T)
+# sep = \t means tab
+
+#Update the column headers
+colnames(gage_data1) = c("agency_cd", "site_no", "datetime", "tz_cd",
+                        "discharge_cfs", "89192_00060_cd", "gage_ht_ft", "89193_00065_cd")
+#Tidy the data
+gage_data1 <- gage_data1 %>% 
+  select(datetime, discharge_cfs,gage_ht_ft) %>% 
+  mutate(datetime = ymd_hm(datetime))
+
+#Plot
+ggplot(gage_data1,aes(x=datetime,y=discharge_cfs)) + 
+  geom_line() +
+  labs(x = "Date",y = "Discharge (cfs)")
+
+# this just shpws that the value of data is changing
 ```
 
 
 ## APIs
+# way to interface with new commands
 
 Application programming interfaces, or APIs, are a formalization of the REST request/response process. More precisely, they are web sites that have been designed to allow a client to query specific bits of data from an on-line resource without just "hacking" a URL.
 
@@ -201,17 +230,23 @@ The RVest scraping workflow is as follows:
 
 ```{r EXERCISE - scrape.data.manually eval=FALSE}
 #1 Link to the web site using read_html
-the_website <- 
+the_website <- read_html("https://www.eia.gov/electricity/state/")
 
 #2&3 Locate elements and read their text attributes into variables
-the_states <- 
-the_price <- 
-the_capacity <- 
-net_generation <- 
-total_retail <- 
+the_states <- the_website %>% html_nodes(".basic-table a") %>% html_text()
+the_price <- the_website %>% html_nodes("td:nth-child(2)") %>% html_text()
+the_capacity <- the_website %>% html_nodes("td:nth-child(3)") %>% html_text()
+net_generation <- the_website %>% html_nodes("td:nth-child(4)") %>% html_text()
+total_retail <- the_website %>% html_nodes("td:nth-child(5)") %>% html_text()
   
 #3 Construct a dataframe from the values
-
+the_df <- data.frame(
+  state = the_states,
+  price = as.numeric(the_price),
+  capacity = gsub(",","",the_capacity) %>% as.numeric(),
+  net.generation = gsub(",","",net_generation) %>% as.numeric(),
+  total.retail = gsub(",","",total_retail) %>% as.numeric()
+  )
 ```
 
 
