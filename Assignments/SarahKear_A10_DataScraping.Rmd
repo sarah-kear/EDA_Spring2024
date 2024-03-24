@@ -1,6 +1,6 @@
 ---
 title: "Assignment 10: Data Scraping"
-author: "Student Name"
+author: "Sarah Kear"
 output: pdf_document
 ---
 
@@ -25,8 +25,11 @@ This exercise accompanies the lessons in Environmental Data Analytics on data sc
 
 ```{r 1. Project Setup, message = FALSE}
 #1 
+library(tidyverse)
+library(rvest)
+library(here)
 
-
+here()
 ```
 
 2. We will be scraping data from the NC DEQs Local Water Supply Planning website, specifically the Durham's 2022 Municipal Local Water Supply Plan (LWSP): 
@@ -38,7 +41,8 @@ Indicate this website as the as the URL to be scraped. (In other words, read the
 
 ```{r set.the.scraping.website}
 #2 
-
+theURL <- read_html('https://www.ncwater.org/WUDC/app/LWSP/report.php?pwsid=03-32-010&year=2022')
+theURL
 ```
 
 3. The data we want to collect are listed below:
@@ -56,8 +60,26 @@ In the code chunk below scrape these values, assigning them to four separate var
 >HINT: The first value should be "Durham", the second "03-32-010", the third "Municipality", and the last should be a vector of 12 numeric values (represented as strings)".
 
 ```{r scrape.the.data}
-#3 
+#3
+WaterSystem <- theURL %>% 
+        html_nodes("div+ table tr:nth-child(1) td:nth-child(2)") %>% 
+        html_text()
+WaterSystem
 
+PWSID <- theURL %>% 
+        html_nodes("td tr:nth-child(1) td:nth-child(5)") %>% 
+        html_text()
+PWSID
+
+Ownership <- theURL %>% 
+        html_nodes("div+ table tr:nth-child(2) td:nth-child(4)") %>% 
+        html_text()
+Ownership
+
+MaxDayUse <- theURL %>% 
+        html_nodes("th~ td+ td") %>% 
+        html_text()
+MaxDayUse
 ```
 
 
@@ -71,9 +93,26 @@ In the code chunk below scrape these values, assigning them to four separate var
 
 ```{r create.a.dataframe.from.scraped.data}
 #4 
+df_withdrawals <- data.frame("WaterSystem" = rep(WaterSystem),
+                             "PWSID" = rep(PWSID),
+                             "Ownership" = rep(Ownership),
+                             "Month" = rep(1:12),
+                             "Year" = rep(2022,12),
+                             "Max_Withdrawals_mgd" = as.numeric(MaxDayUse)) %>%
+        mutate(Date = my(paste(Month,"-",Year)))
+df_withdrawals
 
 #5 
-
+plot1 <- df_withdrawals %>%
+        ggplot(aes(x=Date,
+                   y=Max_Withdrawals_mgd)) +
+        geom_line() +
+         scale_x_date(date_labels = "%B", date_breaks = "1 month") +
+        ylab("Max Withdrawals (MGD)") +
+        xlab("Month") +
+        ggtitle("Durham Local Water Supply Max Withdrawals (MGD) per Month in 2022") +
+        theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+plot1
 ```
 
 6. Note that the PWSID and the year appear in the web address for the page we scraped. Construct a function using your code above that can scrape data for any PWSID and year for which the NC DEQ has data. **Be sure to modify the code to reflect the year and site (pwsid) scraped**.
