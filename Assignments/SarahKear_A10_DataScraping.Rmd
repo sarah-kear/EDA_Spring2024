@@ -42,7 +42,6 @@ Indicate this website as the as the URL to be scraped. (In other words, read the
 ```{r set.the.scraping.website}
 #2 
 theURL <- read_html('https://www.ncwater.org/WUDC/app/LWSP/report.php?pwsid=03-32-010&year=2022')
-theURL
 ```
 
 3. The data we want to collect are listed below:
@@ -96,7 +95,10 @@ MaxDayUse
 df_withdrawals <- data.frame("WaterSystem" = rep(WaterSystem),
                              "PWSID" = rep(PWSID),
                              "Ownership" = rep(Ownership),
-                             "Month" = rep(1:12),
+                             "Month" = c("Jan", "May", "Sept", 
+                             "Feb","Jun", "Oct",
+                             "Mar", "Jul", "Nov",
+                             "Apr", "Aug", "Dec"),
                              "Year" = rep(2022,12),
                              "Max_Withdrawals_mgd" = as.numeric(MaxDayUse)) %>%
         mutate(Date = my(paste(Month,"-",Year)))
@@ -107,11 +109,10 @@ plot1 <- df_withdrawals %>%
         ggplot(aes(x=Date,
                    y=Max_Withdrawals_mgd)) +
         geom_line() +
-         scale_x_date(date_labels = "%B", date_breaks = "1 month") +
+         scale_x_date(date_labels = "%b", date_breaks = "1 month") +
         ylab("Max Withdrawals (MGD)") +
         xlab("Month") +
-        ggtitle("Durham Local Water Supply Max Withdrawals (MGD) per Month in 2022") +
-        theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+        ggtitle(paste(WaterSystem,"Local Water Supply Max Withdrawals (MGD) during 2022"))
 plot1
 ```
 
@@ -119,24 +120,84 @@ plot1
 
 ```{r construct.a.scraping.function}
 #6. 
+water.data.scrape <- function(the_PWSID, the_year){
 
-
+        #Retrieving web contents        
+        the_website <- read_html(paste0('https://www.ncwater.org/WUDC/app/LWSP/report.php?', 
+                                  'pwsid=', the_PWSID, '&year=', the_year))
+        
+        #Scraping the elements from webpage
+        WaterSystem <- the_website %>% 
+                html_nodes("div+ table tr:nth-child(1) td:nth-child(2)") %>% 
+                html_text()
+        PWSID <- the_website %>% 
+                html_nodes("td tr:nth-child(1) td:nth-child(5)") %>% 
+                html_text()
+        Ownership <- the_website %>% 
+                html_nodes("div+ table tr:nth-child(2) td:nth-child(4)") %>% 
+                html_text()
+        MaxDayUse <- the_website %>% 
+                html_nodes("th~ td+ td") %>% 
+                html_text()
+        
+        #Convert to a dataframe
+        df_withdrawals <- data.frame("WaterSystem" = rep(WaterSystem),
+                                     "PWSID" = rep(PWSID),
+                                     "Ownership" = rep(Ownership),
+                                     "Month" = c("Jan", "May", "Sept",
+                                                 "Feb","Jun", "Oct",
+                                                 "Mar", "Jul", "Nov",
+                                                 "Apr", "Aug", "Dec"),
+                                     "Year" = rep(the_year,12),
+                                     "Max_Withdrawals_mgd" = as.numeric(MaxDayUse)) %>%
+                mutate(Date = my(paste(Month,"-",Year)))
+        df_withdrawals
+        
+        Sys.sleep(5) #uncomment this if you are doing bulk scraping!
+        
+        #Return the dataframe
+        return(df_withdrawals)
+}
 ```
 
 7. Use the function above to extract and plot max daily withdrawals for Durham (PWSID='03-32-010') for each month in 2015
 
 ```{r fetch.and.plot.Durham.2015.data}
 #7 
+q7_df <- water.data.scrape('03-32-010',2015)
+view(q7_df)
 
-
+plot2 <- q7_df %>%
+        ggplot(aes(x=Date,
+                   y=Max_Withdrawals_mgd)) +
+        geom_line() +
+         scale_x_date(date_labels = "%b", date_breaks = "1 month") +
+        ylab("Max Withdrawals (MGD)") +
+        xlab("Month") +
+        ggtitle(paste(WaterSystem,"Local Water Supply Max Withdrawals (MGD) during 2015"))
+plot2
 ```
 
 8. Use the function above to extract data for Asheville (PWSID = 01-11-010) in 2015. Combine this data with the Durham data collected above and create a plot that compares Asheville's to Durham's water withdrawals.
 
 ```{r fetch.and.plot.Asheville.2015.data}
 #8 
+q8_df <- water.data.scrape('01-11-010',2015)
+view(q8_df)
 
+Ashville.Durham.2015_df <- bind_rows(q7_df, q8_df)
 
+plot3 <- Ashville.Durham.2015_df %>%
+        ggplot(aes(x=Date,
+                   y=Max_Withdrawals_mgd,
+                   color = WaterSystem)) +
+        geom_line() +
+         scale_x_date(date_labels = "%b", date_breaks = "1 month") +
+        ylab("Max Withdrawals (MGD)") +
+        xlab("Month") +
+        ggtitle("Local Water Supply Max Withdrawals (MGD) during 2015") +
+        labs(subtitle = "Asheville & Durham")
+plot3
 ```
 
 
@@ -146,10 +207,33 @@ plot1
 
 ```{r fetch.and.plot.Asheville.multiyear.data }
 #9 
+the_years = rep(2010:2021)
+my_PWSID = '01-11-010'
 
+#Use lapply to apply the scrape function
+the_dfs <- lapply(X = the_years,
+                  FUN = water.data.scrape,
+                  the_PWSID=my_PWSID)
 
+Asheville_df <- bind_rows(the_dfs)
+
+plot4 <- Asheville_df %>%
+        ggplot(aes(x=Date,
+                   y=Max_Withdrawals_mgd)) +
+        geom_line() +
+        geom_smooth(method="loess",se=FALSE) +
+        scale_x_date(breaks = seq(as.Date("2010-01-01"),
+                                  as.Date("2022-01-01"),
+                                  by="6 months"),
+                     date_labels = "%b-%y") +
+        ylab("Max Withdrawals (MGD)") +
+        xlab("Month") +
+        ggtitle("Asheville Local Water Supply Max Withdrawals (MGD) during 2010 to 2021") +
+        theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+plot4
 ```
 
 Question: Just by looking at the plot (i.e. not running statistics), does Asheville have a trend in water usage over time?
-> Answer:
+> Answer: Yes, between 2016 and 2021, there is a staeady increase in water usage. Between 2010 and 2016, there also seems to be a slight decrease in water usage as well. 
 >
