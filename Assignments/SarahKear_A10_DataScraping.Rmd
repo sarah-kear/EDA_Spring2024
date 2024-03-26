@@ -235,5 +235,5 @@ plot4
 ```
 
 Question: Just by looking at the plot (i.e. not running statistics), does Asheville have a trend in water usage over time?
-> Answer: Yes, between 2016 and 2021, there is a staeady increase in water usage. Between 2010 and 2016, there also seems to be a slight decrease in water usage as well. 
+> Answer: Between 2010 and 2016, there seems to be a slight decrease in water usage. But then between 2016 and 2021, there is a staeady increase in water usage. 
 >
